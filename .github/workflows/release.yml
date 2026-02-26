@@ -1,0 +1,92 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+            artifact: tentactl-linux-amd64
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-24.04-arm
+            artifact: tentactl-linux-arm64
+          - target: x86_64-apple-darwin
+            os: macos-latest
+            artifact: tentactl-macos-amd64
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            artifact: tentactl-macos-arm64
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            artifact: tentactl-windows-amd64.exe
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+
+      - run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Rename binary
+        shell: bash
+        run: |
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            cp target/${{ matrix.target }}/release/tentactl.exe ${{ matrix.artifact }}
+          else
+            cp target/${{ matrix.target }}/release/tentactl ${{ matrix.artifact }}
+          fi
+
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ matrix.artifact }}
+
+  publish-crate:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Set version from tag
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          sed -i "s/^version = .*/version = \"$VERSION\"/" Cargo.toml
+      - run: cargo publish --allow-dirty || echo "::warning::Crate version already published, skipping"
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+  publish-skill:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Publish to ClawHub
+        run: |
+          npx clawhub login --token "$CLAWHUB_TOKEN" --no-browser
+          npx clawhub publish "$(pwd)/skill" \
+            --slug tentactl \
+            --name "Kraken Exchange" \
+            --version "${GITHUB_REF_NAME#v}" \
+            --changelog "Release ${GITHUB_REF_NAME}" || echo "::warning::ClawHub publish failed, may need manual publish"
+        env:
+          CLAWHUB_TOKEN: ${{ secrets.CLAWHUB_TOKEN }}

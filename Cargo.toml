@@ -1,0 +1,35 @@
+[package]
+name = "tentactl"
+version = "0.3.0"
+edition = "2021"
+description = "Kraken exchange agent toolkit — MCP server + OpenClaw skill for crypto trading, market data, and portfolio management"
+license = "MIT"
+repository = "https://github.com/askbeka/tentactl"
+keywords = ["kraken", "mcp", "cryptocurrency", "trading", "agent"]
+categories = ["command-line-utilities", "finance"]
+readme = "README.md"
+
+[[bin]]
+name = "tentactl"
+path = "src/main.rs"
+
+[dependencies]
+rmcp = { version = "0.16", features = ["server", "transport-io"] }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+hmac = "0.12"
+sha2 = "0.10"
+base64 = "0.22"
+tokio = { version = "1", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+thiserror = "2"
+schemars = "1.0"
+serde_urlencoded = "0.7.1"
+tokio-tungstenite = { version = "0.24", features = ["rustls-tls-webpki-roots"] }
+futures-util = "0.3"
+
+[dev-dependencies]
+tokio-test = "0.4.5"
+wiremock = "0.6.5"
