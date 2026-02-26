@@ -180,8 +180,10 @@ This is the power of MCP: tentactl doesn't need to build all of this. It just ne
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `KRAKEN_API_KEY` | For account/trading | Kraken API key |
-| `KRAKEN_API_SECRET` | For account/trading | Kraken API secret |
+| `KRAKEN_API_KEY` | For spot account/trading | Spot API key ([create here](https://www.kraken.com/u/security/api)) |
+| `KRAKEN_API_SECRET` | For spot account/trading | Spot API secret |
+| `KRAKEN_FUTURES_KEY` | For futures account/trading | Futures API key ([create here](https://futures.kraken.com/trade/settings/api)) |
+| `KRAKEN_FUTURES_SECRET` | For futures account/trading | Futures API secret |
 | `RUST_LOG` | No | Log level (`info`, `debug`) — logs to stderr |
 
 ## Development
