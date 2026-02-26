@@ -35,8 +35,8 @@ pub struct FuturesInstrument {
     pub symbol: Option<String>,
     pub tradeable: Option<bool>,
     pub has_funding: Option<bool>,
-    pub tick_size: Option<String>,
-    pub contract_size: Option<String>,
+    pub tick_size: Option<ApiValue>,
+    pub contract_size: Option<ApiValue>,
     pub underlying: Option<String>,
     #[serde(flatten)]
     pub extra: HashMap<String, ApiValue>,
@@ -62,13 +62,6 @@ pub struct FuturesInstrumentStatusResult {
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
 pub struct FuturesTickerEntry {
     pub symbol: Option<String>,
-    pub mark_price: Option<String>,
-    pub last: Option<String>,
-    pub bid: Option<String>,
-    pub ask: Option<String>,
-    pub volume: Option<String>,
-    pub open_interest: Option<String>,
-    pub funding_rate: Option<String>,
     #[serde(flatten)]
     pub extra: HashMap<String, ApiValue>,
 }
@@ -89,19 +82,9 @@ pub struct FuturesTickerResult {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
-pub struct FuturesBookLevel {
-    pub price: Option<String>,
-    pub qty: Option<String>,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 pub struct FuturesOrderbookResult {
-    pub symbol: Option<String>,
-    #[serde(default)]
-    pub bids: Vec<FuturesBookLevel>,
-    #[serde(default)]
-    pub asks: Vec<FuturesBookLevel>,
-    pub timestamp: Option<String>,
+    #[serde(rename = "orderBook")]
+    pub order_book: Option<ApiValue>,
     #[serde(flatten)]
     pub extra: HashMap<String, ApiValue>,
 }
@@ -197,7 +180,7 @@ pub struct FuturesOrderStatusResult {
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
 pub struct FuturesLeverageResult {
     pub symbol: Option<String>,
-    pub max_leverage: Option<String>,
+    pub max_leverage: Option<ApiValue>,
     #[serde(flatten)]
     pub extra: HashMap<String, ApiValue>,
 }

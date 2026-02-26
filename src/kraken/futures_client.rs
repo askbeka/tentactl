@@ -270,7 +270,7 @@ impl FuturesClient {
             symbol: &'a str,
         }
         self.public(
-            "/derivatives/api/v3/historicalfundingrates",
+            "/derivatives/api/v4/historicalfundingrates",
             &FundingRatesRequest { symbol },
         )
         .await
