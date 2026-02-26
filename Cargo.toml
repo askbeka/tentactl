@@ -1,6 +1,6 @@
 [package]
 name = "tentactl"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2021"
 description = "Kraken exchange agent toolkit — MCP server + OpenClaw skill for crypto trading, market data, and portfolio management"
 license = "MIT"
