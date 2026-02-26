@@ -9,7 +9,7 @@ metadata:
         "requires":
           {
             "bins": ["tentactl"],
-            "env": ["KRAKEN_API_KEY", "KRAKEN_API_SECRET"],
+            "env": ["KRAKEN_API_KEY", "KRAKEN_API_SECRET", "KRAKEN_FUTURES_KEY", "KRAKEN_FUTURES_SECRET"],
           },
         "install":
           [
@@ -23,8 +23,10 @@ metadata:
           ],
         "credentials":
           {
-            "KRAKEN_API_KEY": "Kraken API key — generate at https://www.kraken.com/u/security/api",
-            "KRAKEN_API_SECRET": "Kraken API secret (private key from the same page)",
+            "KRAKEN_API_KEY": "Kraken Spot API key — generate at https://www.kraken.com/u/security/api",
+            "KRAKEN_API_SECRET": "Kraken Spot API secret (private key from the same page)",
+            "KRAKEN_FUTURES_KEY": "Kraken Futures API key — generate at https://futures.kraken.com/trade/settings/api (separate from Spot keys)",
+            "KRAKEN_FUTURES_SECRET": "Kraken Futures API secret (from the same Futures settings page)",
           },
         "privacy":
           {
@@ -64,16 +66,26 @@ Or download from [GitHub Releases](https://github.com/askbeka/tentactl/releases)
 Market data tools work **without any keys**. For account and trading tools:
 
 ```bash
+# Spot API keys
 echo "KRAKEN_API_KEY=your-key" > ~/.tentactl.env
 echo "KRAKEN_API_SECRET=your-secret" >> ~/.tentactl.env
+
+# Futures API keys (optional, separate from Spot)
+echo "KRAKEN_FUTURES_KEY=your-futures-key" >> ~/.tentactl.env
+echo "KRAKEN_FUTURES_SECRET=your-futures-secret" >> ~/.tentactl.env
+
 chmod 600 ~/.tentactl.env
 ```
 
 Or use the 1Password setup script: `scripts/setup-keys.sh`
 
-**Key permissions:** Create keys at https://www.kraken.com/u/security/api
+**Spot key permissions:** Create at https://www.kraken.com/u/security/api
 - Read-only: enable **Query Funds** and **Query Open Orders & Trades**
 - Trading: also enable **Create & Modify Orders**
+
+**Futures keys** are separate — create at https://futures.kraken.com/trade/settings/api
+- Futures public endpoints (tickers, orderbook, instruments) work without keys
+- Futures account/trading endpoints require `KRAKEN_FUTURES_KEY` and `KRAKEN_FUTURES_SECRET`
 
 ## Usage
 

@@ -83,5 +83,23 @@ fi
 
 echo "KRAKEN_API_KEY=$API_KEY" > "$ENV_FILE"
 echo "KRAKEN_API_SECRET=$API_SECRET" >> "$ENV_FILE"
+
+# Optional: Futures keys
+echo ""
+echo "Futures API keys are separate from Spot keys."
+echo "(Get them from https://futures.kraken.com/trade/settings/api)"
+echo "Press Enter to skip if you don't need futures trading."
+echo ""
+read -p "Futures API Key (or Enter to skip): " FUTURES_KEY
+if [[ -n "$FUTURES_KEY" ]]; then
+    read -sp "Futures API Secret: " FUTURES_SECRET
+    echo ""
+    if [[ -n "$FUTURES_SECRET" ]]; then
+        echo "KRAKEN_FUTURES_KEY=$FUTURES_KEY" >> "$ENV_FILE"
+        echo "KRAKEN_FUTURES_SECRET=$FUTURES_SECRET" >> "$ENV_FILE"
+        echo "✅ Futures keys added"
+    fi
+fi
+
 chmod 600 "$ENV_FILE"
 echo "✅ Keys saved to $ENV_FILE"
